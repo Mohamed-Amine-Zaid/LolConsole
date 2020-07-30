@@ -1,35 +1,33 @@
 package com.company;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Console {
     private Champion champion;
     private Scanner sc;
+    private IChampData dataProvider;
 
-    public Console() {
+    public Console(IChampData dataProvider) {
         this.sc = new Scanner(System.in);
+        this.dataProvider = dataProvider;
     }
 
     public void champChoice(){
         System.out.println("Choose between those champions : ");
-
-        for(int i = 0; i<DataProvider.champsDataArray.length; i++){
-            System.out.println(DataProvider.champsDataArray[i][0]);
-        }
+        Arrays.asList(dataProvider.getChampionName()).forEach(System.out::println);
     }
 
     public void checkChampName(){
         String userInputChampName="";
-        String[] champData;
         while (champion==null){
             userInputChampName = sc.nextLine().toLowerCase();
-            champData = DataProvider.joinChampAndSpellData(userInputChampName);
-            if (champData==null){
+            if (dataProvider.getChampionByName(userInputChampName)==null){
                 System.out.println("This is not a valid champion name, choose an appropriate name.");
                 continue;
             }
-            champion = new Champion(champData);
+            champion = dataProvider.getChampionByName(userInputChampName);
         }
     }
 
@@ -41,7 +39,7 @@ public class Console {
             startGoldEarnTimer=LocalDateTime.now();
             System.out.println("which spell do you want to use between a,z,e and r? You can also press p to open the shop");
             keySpell = sc.nextLine().toLowerCase();
-            goldGenerator(startGoldEarnTimer);
+            champion.goldGenerator(startGoldEarnTimer);
             switch (keySpell){
                 case "a":
                     cooldownChecker(champion.getSpellA());
@@ -73,23 +71,17 @@ public class Console {
         Duration duration = Duration.between(spellLetter.getLastTimeSpellUsed(), LocalDateTime.now());
         long difference = duration.toSeconds();
         if (difference < spellLetter.getCooldown()){
-            System.out.println("This spell is not ready yet");
+            System.out.println("This spell is not ready yet. " + (spellLetter.getCooldown() - difference) + " seconds remaining.");
         }else {
             System.out.println(champion.getName() + " used " + spellLetter.getName());
             spellLetter.setLastTimeSpellUsed(LocalDateTime.now());
         }
     }
 
-    public void goldGenerator(LocalDateTime startGoldEarnTimer){
-        Duration duration = Duration.between(startGoldEarnTimer, LocalDateTime.now());
-        long difference = duration.toSeconds();
-        champion.setGold((int)difference*200+champion.getGold());
-    }
-
     public void displayShop(){
         System.out.println("Here is the amount of gold you have : " + champion.getGold());
         System.out.println("Choose between those items : ");
-        String[][] itemsAndGoldArray = DataProvider.itemsAndGoldArray;
+        String[][] itemsAndGoldArray = ItemDataProvider.itemsAndGoldArray;
         for(int i = 0; i<itemsAndGoldArray.length; i++){
             System.out.println(itemsAndGoldArray[i][0] + ":  " + itemsAndGoldArray[i][1] + " gold");
         }
@@ -111,7 +103,7 @@ public class Console {
         Item item=null;
         while(item==null){
             String itemChosed = sc.nextLine().toLowerCase();
-            String[] itemData = DataProvider.getItemData(itemChosed);
+            String[] itemData = ItemDataProvider.getItemData(itemChosed);
             if (itemData==null){
                 System.out.println("Enter a valid item name.");
                 continue;
@@ -120,5 +112,4 @@ public class Console {
         }
         return item;
     }
-
 }

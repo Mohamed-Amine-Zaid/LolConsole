@@ -1,8 +1,10 @@
 package com.company;
 
-public class DataProvider {
+import java.io.FileNotFoundException;
 
-    public static String[][] champsDataArray = {
+public class ChampDataProvider implements IChampData{
+
+    private String[][] champsDataArray = {
             {"katarina","bouncing blade","preparation","shunpo","death lotus"},
             {"master yi","alpha strike","meditation","wuju style","highlander"},
             {"warwick","jaw of the beast","blood hound","primal howl","infinite duress"},
@@ -10,7 +12,7 @@ public class DataProvider {
             {"morgana","binding","flaque","shield","ult"}
     };
 
-    public static String[][] spellsDataArray={
+    private String[][] spellsDataArray={
             {"bouncing blade","5"},
             {"preparation","6"},
             {"shunpo","7"},
@@ -26,25 +28,16 @@ public class DataProvider {
             {"tornade","24"},
             {"mur d'air","17"},
             {"dash infini","18"},
-            {"igezo","19"},
+            {"soryegeton","19"},
             {"binding","20"},
             {"flaque","21"},
             {"shield","22"},
             {"ult","23"}
     };
 
-    public static String[][] itemsAndGoldArray ={
-            {"trinity force","3250"},
-            {"zhonya","2800"},
-            {"zzrot portal","2700"},
-            {"spirit visage","2900"},
-            {"infinite edge","2700"},
-            {"rabadon","3000"},
-            {"boots of mercury","1300"},
-            {"warmog","3150"}
-    };
 
-    public static String[] getChampData(String champName){
+
+    private String[] getChampData(String champName){
         for (int i = 0; i< champsDataArray.length; i++){
             if (champName.equals(champsDataArray[i][0])){
                  return champsDataArray[i];
@@ -53,7 +46,7 @@ public class DataProvider {
         return null;
     }
 
-    public static String[] joinChampAndSpellData(String champName){
+    private String[] joinChampAndSpellData(String champName){
         String[] champsDataArray = getChampData(champName);
         if (champsDataArray==null){
             return null;
@@ -80,12 +73,29 @@ public class DataProvider {
         return joinedArrays;
     }
 
-    public static String[] getItemData(String itemName){
-        for (int i=0;i<itemsAndGoldArray.length;i++){
-            if (itemName.equals(itemsAndGoldArray[i][0])){
-                return itemsAndGoldArray[i];
-            }
+    @Override
+    public String[] getChampionName() {
+        String[] champName = new String[champsDataArray.length];
+        for (int i=0;i<champsDataArray.length;i++){
+            champName[i] = champsDataArray[i][0];
         }
-        return null;
+        return champName;
+    }
+
+    @Override
+    public Champion getChampionByName(String name) {
+        String[] champsData = joinChampAndSpellData(name);
+
+        if (champsData==null){
+            return null;
+        }
+        Champion champion = new Champion(champsData[0],
+                new Spell(champsData[1],Integer.parseInt(champsData[5])),
+                new Spell(champsData[2],Integer.parseInt(champsData[6])),
+                new Spell(champsData[3],Integer.parseInt(champsData[7])),
+                new Spell(champsData[4],Integer.parseInt(champsData[8]))
+                );
+
+        return champion;
     }
 }
