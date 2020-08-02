@@ -1,4 +1,4 @@
-package com.company;
+package main.java;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -25,7 +25,7 @@ public class Champion {
     public void goldGenerator(LocalDateTime startGoldEarnTimer){
         Duration duration = Duration.between(startGoldEarnTimer, LocalDateTime.now());
         long difference = duration.toSeconds();
-        setGold((int)difference*200+getGold());
+        setGold((int)difference*1000+getGold());
     }
 
     public String getName() {
@@ -81,9 +81,9 @@ public class Champion {
     }
 
     public void addItemToInventory(Item item) {
-        for (Item i:this.inventory){
-            if (i==null){
-                i = item;
+        for (int i=0;i<inventory.length;i++){
+            if (inventory[i]==null){
+                inventory[i] = item;
                 break;
             }
         }

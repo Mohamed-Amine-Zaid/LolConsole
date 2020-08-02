@@ -1,12 +1,12 @@
-package com.company;
+package main.java;
 
 public class Item {
     private String name;
     private int price;
 
-    public Item(String[] itemData){
-        this.name= itemData[0];
-        this.price= Integer.parseInt(itemData[1]);
+    public Item(String name, int price){
+        this.name= name;
+        this.price= price;
     }
 
     public String getName() {
@@ -23,5 +23,10 @@ public class Item {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return name + " : " + price + " gold";
     }
 }

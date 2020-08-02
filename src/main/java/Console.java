@@ -1,4 +1,4 @@
-package com.company;
+package main.java;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -7,9 +7,9 @@ import java.util.Scanner;
 public class Console {
     private Champion champion;
     private Scanner sc;
-    private IChampData dataProvider;
+    private IDataProvider dataProvider;
 
-    public Console(IChampData dataProvider) {
+    public Console(IDataProvider dataProvider) {
         this.sc = new Scanner(System.in);
         this.dataProvider = dataProvider;
     }
@@ -19,7 +19,7 @@ public class Console {
         Arrays.asList(dataProvider.getChampionName()).forEach(System.out::println);
     }
 
-    public void checkChampName(){
+    public void askChampion(){
         String userInputChampName="";
         while (champion==null){
             userInputChampName = sc.nextLine().toLowerCase();
@@ -37,7 +37,7 @@ public class Console {
         boolean isff20=false;
         while (!isff20){
             startGoldEarnTimer=LocalDateTime.now();
-            System.out.println("which spell do you want to use between a,z,e and r? You can also press p to open the shop");
+            System.out.println("which spell do you want to use between a,z,e and r? You can also press p to open the shop or i to show your inventory.");
             keySpell = sc.nextLine().toLowerCase();
             champion.goldGenerator(startGoldEarnTimer);
             switch (keySpell){
@@ -56,6 +56,9 @@ public class Console {
                 case "p":
                     displayShop();
                     break;
+                case "i":
+                    displayInventory();
+                    break;
                 case "ff20":
                     isff20=true;
                     System.out.println("Defeat.");
@@ -65,6 +68,18 @@ public class Console {
                     break;
             }
         }
+    }
+
+
+    private void displayInventory() {
+        for (Item item:champion.getInventory()
+             ) {
+            if (item!=null){
+                System.out.print (item.getName());
+                System.out.print(" - ");
+            }
+        }
+        System.out.println("");
     }
 
     public void cooldownChecker(Spell spellLetter){
@@ -81,12 +96,11 @@ public class Console {
     public void displayShop(){
         System.out.println("Here is the amount of gold you have : " + champion.getGold());
         System.out.println("Choose between those items : ");
-        String[][] itemsAndGoldArray = ItemDataProvider.itemsAndGoldArray;
-        for(int i = 0; i<itemsAndGoldArray.length; i++){
-            System.out.println(itemsAndGoldArray[i][0] + ":  " + itemsAndGoldArray[i][1] + " gold");
+        for (Item item:dataProvider.getItems()
+             ) {
+            System.out.println(item);       // on a override la méthode toString()
         }
-        
-        itemToInventory(itemChecker());
+        itemToInventory(askItem());
     }
 
     public void itemToInventory(Item item) {
@@ -99,16 +113,15 @@ public class Console {
         }
     }
 
-    public Item itemChecker() {
-        Item item=null;
+    public Item askItem() {
+        Item item = null;
+        String userInput = "";
         while(item==null){
-            String itemChosed = sc.nextLine().toLowerCase();
-            String[] itemData = ItemDataProvider.getItemData(itemChosed);
-            if (itemData==null){
+            userInput = sc.nextLine().toLowerCase();
+            item = dataProvider.getItemByName(userInput);
+            if (item==null){
                 System.out.println("Enter a valid item name.");
-                continue;
             }
-            item = new Item(itemData);
         }
         return item;
     }
