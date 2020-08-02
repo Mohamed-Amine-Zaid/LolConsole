@@ -1,5 +1,9 @@
 package main.java;
 
+import main.java.dataAccessLayer.CsvDataProvider;
+import main.java.dataAccessLayer.HardDataProvider;
+import main.java.vue.Console;
+
 import java.io.FileNotFoundException;
 
 public class Main {

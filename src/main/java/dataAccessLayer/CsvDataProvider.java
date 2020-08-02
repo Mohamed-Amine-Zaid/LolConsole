@@ -1,4 +1,7 @@
-package main.java;
+package main.java.dataAccessLayer;
+
+import main.java.dataAccessLayer.AbstractDataProvider;
+import main.java.dataAccessLayer.IDataProvider;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +17,12 @@ public class CsvDataProvider extends AbstractDataProvider implements IDataProvid
 
     private String[][] getData(String pathName) throws FileNotFoundException {
         File file = new File(pathName);
-        Scanner sc = new Scanner(file);
+        Scanner sc = null;
+        try {
+            sc = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException("File not found.");
+        }
         List<String[]> data = new ArrayList<>();
         while (sc.hasNextLine()) {
             data.add(sc.nextLine().replaceAll("[\uFEFF-\uFFFF]", "").split(";"));

@@ -1,4 +1,8 @@
-package main.java;
+package main.java.dataAccessLayer;
+
+import main.java.model.Champion;
+import main.java.model.Item;
+import main.java.model.Spell;
 
 public abstract class AbstractDataProvider implements IDataProvider {
     protected String[][] champsData;

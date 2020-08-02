@@ -1,4 +1,7 @@
-package main.java;
+package main.java.dataAccessLayer;
+
+import main.java.dataAccessLayer.AbstractDataProvider;
+import main.java.dataAccessLayer.IDataProvider;
 
 public class HardDataProvider extends AbstractDataProvider implements IDataProvider {
 

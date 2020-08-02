@@ -1,4 +1,9 @@
-package main.java;
+package main.java.vue;
+import main.java.dataAccessLayer.IDataProvider;
+import main.java.model.Champion;
+import main.java.model.Item;
+import main.java.model.Spell;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
